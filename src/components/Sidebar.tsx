@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, Filter, X } from "lucide-react";
+import { Search, Filter, X, BookOpen, Brain } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,10 +11,12 @@ interface SidebarProps {
   selectedCategories: string[];
   selectedDifficulties: string[];
   searchQuery: string;
+  mode: "patterns" | "quiz";
   onSearchChange: (query: string) => void;
   onCategoryToggle: (category: string) => void;
   onDifficultyToggle: (difficulty: string) => void;
   onClearFilters: () => void;
+  onModeChange: (mode: "patterns" | "quiz") => void;
 }
 
 export function Sidebar({
@@ -23,17 +25,19 @@ export function Sidebar({
   selectedCategories,
   selectedDifficulties,
   searchQuery,
+  mode,
   onSearchChange,
   onCategoryToggle,
   onDifficultyToggle,
   onClearFilters,
+  onModeChange,
 }: SidebarProps) {
   const hasActiveFilters = selectedCategories.length > 0 || selectedDifficulties.length > 0;
 
   return (
     <aside className="w-80 bg-sidebar border-r border-sidebar-border flex flex-col h-screen">
-      <div className="p-6 border-b border-sidebar-border">
-        <div className="flex items-center gap-3 mb-2">
+      <div className="p-6 border-b border-sidebar-border space-y-4">
+        <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary-glow rounded-lg flex items-center justify-center">
             <span className="text-white font-bold text-lg">CP</span>
           </div>
@@ -41,6 +45,32 @@ export function Sidebar({
             <h1 className="text-xl font-bold text-foreground">CodePatterns</h1>
             <p className="text-xs text-muted-foreground">Learn better code</p>
           </div>
+        </div>
+
+        {/* Mode Toggle */}
+        <div className="grid grid-cols-2 gap-2 p-1 bg-muted rounded-lg">
+          <button
+            onClick={() => onModeChange("patterns")}
+            className={`flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all ${
+              mode === "patterns"
+                ? "bg-background text-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <BookOpen className="h-4 w-4" />
+            Patterns
+          </button>
+          <button
+            onClick={() => onModeChange("quiz")}
+            className={`flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all ${
+              mode === "quiz"
+                ? "bg-background text-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <Brain className="h-4 w-4" />
+            Quiz
+          </button>
         </div>
       </div>
 
