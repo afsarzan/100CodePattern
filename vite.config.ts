@@ -10,7 +10,7 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
   },
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
-  base: '/fresh-canvas-redo-09/',
+  base: '/100CodePattern/',
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
