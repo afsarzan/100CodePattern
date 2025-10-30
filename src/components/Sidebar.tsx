@@ -172,9 +172,34 @@ export function Sidebar({
       </ScrollArea>
 
       <div className="p-6 border-t border-sidebar-border">
+        
+
+        <div className="max-w-sm mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-md p-6 flex flex-col align-top items-center space-x-4">
         <p className="text-xs text-muted-foreground text-center">
           100 patterns to master
         </p>
+        <div>
+          <div className="text-xl font-medium text-black">By: Afsar Ahmed</div>
+          <div className="flex space-x-4 mt-2">
+            <a href="https://www.linkedin.com/in/afsarahmed/" target="_blank" rel="noopener noreferrer"
+              className="text-blue-600 hover:text-blue-800 flex items-center space-x-1">
+              <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.762 2.239 5 5 5h14c2.762 0 5-2.238 5-5v-14c0-2.761-2.238-5-5-5zm-11.75 19h-3v-9h3v9zm-1.5-10.268c-.967 0-1.75-.783-1.75-1.75s.783-1.75 1.75-1.75 1.75.783 1.75 1.75-.783 1.75-1.75 1.75zm13.25 10.268h-3v-4.5c0-1.071-.93-1.5-1.25-1.5s-1.75.429-1.75 1.5v4.5h-3v-9h3v1.4c.472-.9 2-.95 2.75 0 0 0 1.25 1.7 1.25 3.1v4.5z"/>
+              </svg>
+              <span className="sr-only">LinkedIn</span>
+            </a>
+            <a href="https://afsarzan.github.io/" target="_blank" rel="noopener noreferrer"
+              className="text-gray-800 hover:text-black flex items-center space-x-1">
+              <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                      d="M12 0a12 12 0 00-3.793 23.418c.6.11.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.388-1.333-1.757-1.333-1.757-1.09-.746.083-.73.083-.73 1.205.084 1.838 1.238 1.838 1.238 1.07 1.834 2.805 1.304 3.49.997.108-.775.418-1.305.76-1.605-2.665-.304-5.466-1.335-5.466-5.933 0-1.31.467-2.382 1.235-3.22-.125-.303-.535-1.523.115-3.176 0 0 1.005-.322 3.3 1.23a11.496 11.496 0 013.003-.403c1.02.005 2.046.138 3.003.403 2.29-1.552 3.292-1.23 3.292-1.23.653 1.653.243 2.873.12 3.176.77.838 1.234 1.91 1.234 3.22 0 4.61-2.807 5.625-5.48 5.922.43.37.814 1.1.814 2.22 0 1.602-.014 2.894-.014 3.286 0 .322.22.694.825.576A12 12 0 0012 0z"/>
+              </svg>
+              <span className="sr-only">Portfolio</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
       </div>
     </aside>
   );

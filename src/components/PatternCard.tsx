@@ -31,6 +31,9 @@ export function PatternCard({ pattern, onClick }: PatternCardProps) {
       className="group cursor-pointer transition-all duration-300 hover:shadow-card-hover hover:-translate-y-1 p-6 border-border/50 bg-card animate-fade-in"
       onClick={onClick}
     >
+      
+
+      
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
@@ -89,10 +92,11 @@ export function PatternCard({ pattern, onClick }: PatternCardProps) {
         </div>
       </div>
 
-      <div className="mt-4 pt-4 border-t border-border/50">
+      <div className="mt-4 pt-4 border-t border-border/50 flex items-center justify-between">
         <p className="text-xs text-muted-foreground italic">
           💡 {pattern.commonPattern}
         </p>
+        <span className="flex items-center gap-2 bg-primary/10 border border-primary/20 text-xs font-semibold px-2.5 py-0.5 rounded-full">{pattern.id}</span>
       </div>
     </Card>
   );
