@@ -10,8 +10,8 @@ import { CheckCircle2, XCircle, Award, RotateCcw, ArrowRight, BookOpen } from "l
 import { Progress } from "@/components/ui/progress";
 
 interface QuizProps {
-  selectedCategory?: string;
-  selectedDifficulty?: string;
+  selectedCategory?: string[];
+  selectedDifficulty?: string[];
 }
 
 export const Quiz = ({ selectedCategory, selectedDifficulty }: QuizProps) => {
@@ -24,8 +24,8 @@ export const Quiz = ({ selectedCategory, selectedDifficulty }: QuizProps) => {
 
   // Filter questions based on category and difficulty
   const filteredQuestions = quizQuestions.filter(q => {
-    const matchesCategory = !selectedCategory || q.category === selectedCategory;
-    const matchesDifficulty = !selectedDifficulty || q.difficulty === selectedDifficulty;
+    const matchesCategory = !selectedCategory ||  selectedCategory.includes(q.category);
+    const matchesDifficulty = !selectedDifficulty || selectedDifficulty.includes(q.difficulty);
     return matchesCategory && matchesDifficulty;
   });
 

@@ -42,7 +42,7 @@ const Index = () => {
     });
   }, [searchQuery, selectedCategories, selectedDifficulties]);
 
-  const handleCategoryToggle = (category: string) => {
+  const handleCategoryToggle = (category: string) => {    
     setSelectedCategories((prev) =>
       prev.includes(category)
         ? prev.filter((c) => c !== category)
@@ -140,8 +140,8 @@ const Index = () => {
           </>
         ) : (
           <Quiz 
-            selectedCategory={selectedCategories[0]} 
-            selectedDifficulty={selectedDifficulties[0]}
+            selectedCategory={selectedCategories} 
+            selectedDifficulty={selectedDifficulties}
           />
         )}
       </main>
