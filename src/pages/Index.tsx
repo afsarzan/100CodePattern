@@ -69,6 +69,30 @@ const Index = () => {
     setModalOpen(true);
   };
 
+  const selectedIndex = useMemo(() => {
+    if (!selectedPattern) return -1;
+    return filteredPatterns.findIndex((pattern) => pattern.id === selectedPattern.id);
+  }, [filteredPatterns, selectedPattern]);
+
+  const hasNext = selectedIndex >= 0 && selectedIndex < filteredPatterns.length - 1;
+  const hasPrev = selectedIndex > 0;
+
+  const handleNextPattern = () => {
+    if (!hasNext) return;
+    const nextPattern = filteredPatterns[selectedIndex + 1];
+    if (nextPattern) {
+      setSelectedPattern(nextPattern);
+    }
+  };
+
+  const handlePrevPattern = () => {
+    if (!hasPrev) return;
+    const prevPattern = filteredPatterns[selectedIndex - 1];
+    if (prevPattern) {
+      setSelectedPattern(prevPattern);
+    }
+  };
+
   return (
     <div className="flex min-h-screen bg-background">
       <Sidebar
@@ -150,6 +174,10 @@ const Index = () => {
         pattern={selectedPattern}
         open={modalOpen}
         onOpenChange={setModalOpen}
+        onNext={handleNextPattern}
+        hasNext={hasNext}
+        onPrev={handlePrevPattern}
+        hasPrev={hasPrev}
       />
     </div>
   );
