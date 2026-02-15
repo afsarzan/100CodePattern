@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -29,9 +29,41 @@ export const Quiz = ({ selectedCategory, selectedDifficulty }: QuizProps) => {
     return matchesCategory && matchesDifficulty;
   });
 
-  const currentQuestion = filteredQuestions[currentIndex];
   const totalQuestions = filteredQuestions.length;
-  const progress = ((currentIndex + 1) / totalQuestions) * 100;
+  const safeIndex = totalQuestions === 0 ? 0 : Math.min(currentIndex, totalQuestions - 1);
+  const currentQuestion = filteredQuestions[safeIndex] ?? null;
+  const progress = totalQuestions === 0 ? 0 : ((safeIndex + 1) / totalQuestions) * 100;
+
+  const shuffledOptions = useMemo(() => {
+    if (!currentQuestion) return [] as { text: string; originalIndex: number }[];
+    const seed = currentQuestion.id * 9973 + currentQuestion.options.length;
+    const random = createSeededRandom(seed);
+    const options = currentQuestion.options.map((text, originalIndex) => ({
+      text,
+      originalIndex,
+    }));
+    for (let i = options.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(random() * (i + 1));
+      [options[i], options[j]] = [options[j], options[i]];
+    }
+    return options;
+  }, [currentQuestion?.id, currentQuestion?.options.length]);
+
+  if (totalQuestions === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16 px-8 text-center">
+        <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
+          <BookOpen className="h-8 w-8 text-muted-foreground" />
+        </div>
+        <h3 className="text-xl font-semibold text-foreground mb-2">
+          No quiz questions available
+        </h3>
+        <p className="text-muted-foreground">
+          Try adjusting your filters to see quiz questions
+        </p>
+      </div>
+    );
+  }
 
   const handleAnswerSelect = (answerIndex: number) => {
     if (showExplanation) return;
@@ -40,9 +72,10 @@ export const Quiz = ({ selectedCategory, selectedDifficulty }: QuizProps) => {
 
   const handleSubmitAnswer = () => {
     if (selectedAnswer === null) return;
-    
+    const selectedOption = shuffledOptions[selectedAnswer];
+
     setShowExplanation(true);
-    if (selectedAnswer === currentQuestion.correctAnswer) {
+    if (selectedOption?.originalIndex === currentQuestion.correctAnswer) {
       setScore(score + 1);
     }
     setAnsweredQuestions([...answeredQuestions, currentQuestion.id]);
@@ -66,22 +99,6 @@ export const Quiz = ({ selectedCategory, selectedDifficulty }: QuizProps) => {
     setAnsweredQuestions([]);
     setQuizComplete(false);
   };
-
-  if (filteredQuestions.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center py-16 px-8 text-center">
-        <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
-          <BookOpen className="h-8 w-8 text-muted-foreground" />
-        </div>
-        <h3 className="text-xl font-semibold text-foreground mb-2">
-          No quiz questions available
-        </h3>
-        <p className="text-muted-foreground">
-          Try adjusting your filters to see quiz questions
-        </p>
-      </div>
-    );
-  }
 
   if (quizComplete) {
     const percentage = Math.round((score / totalQuestions) * 100);
@@ -190,9 +207,9 @@ export const Quiz = ({ selectedCategory, selectedDifficulty }: QuizProps) => {
           {/* Answer Options */}
           <RadioGroup value={selectedAnswer?.toString()} onValueChange={(value) => handleAnswerSelect(parseInt(value))}>
             <div className="space-y-3">
-              {currentQuestion.options.map((option, index) => {
+              {shuffledOptions.map((option, index) => {
                 const isSelected = selectedAnswer === index;
-                const isCorrect = index === currentQuestion.correctAnswer;
+                const isCorrect = option.originalIndex === currentQuestion.correctAnswer;
                 const showCorrectness = showExplanation;
                 
                 let borderClass = "border-border";
@@ -219,7 +236,7 @@ export const Quiz = ({ selectedCategory, selectedDifficulty }: QuizProps) => {
                       htmlFor={`option-${index}`}
                       className={`flex-1 cursor-pointer font-medium ${showCorrectness && isCorrect ? 'text-primary' : ''} ${showCorrectness && isSelected && !isCorrect ? 'text-destructive' : ''}`}
                     >
-                      {option}
+                      {option.text}
                     </Label>
                     {showCorrectness && isCorrect && (
                       <CheckCircle2 className="h-5 w-5 text-primary" />
@@ -235,16 +252,16 @@ export const Quiz = ({ selectedCategory, selectedDifficulty }: QuizProps) => {
 
           {/* Explanation */}
           {showExplanation && (
-            <div className={`rounded-lg p-4 border-2 ${selectedAnswer === currentQuestion.correctAnswer ? 'bg-primary/5 border-primary/20' : 'bg-muted border-border'}`}>
+            <div className={`rounded-lg p-4 border-2 ${shuffledOptions[selectedAnswer ?? 0]?.originalIndex === currentQuestion.correctAnswer ? 'bg-primary/5 border-primary/20' : 'bg-muted border-border'}`}>
               <div className="flex items-start gap-3">
-                {selectedAnswer === currentQuestion.correctAnswer ? (
+                {shuffledOptions[selectedAnswer ?? 0]?.originalIndex === currentQuestion.correctAnswer ? (
                   <CheckCircle2 className="h-6 w-6 text-primary mt-0.5 flex-shrink-0" />
                 ) : (
                   <XCircle className="h-6 w-6 text-destructive mt-0.5 flex-shrink-0" />
                 )}
                 <div>
                   <h4 className="font-semibold text-foreground mb-2">
-                    {selectedAnswer === currentQuestion.correctAnswer ? 'Correct!' : 'Incorrect'}
+                    {shuffledOptions[selectedAnswer ?? 0]?.originalIndex === currentQuestion.correctAnswer ? 'Correct!' : 'Incorrect'}
                   </h4>
                   <p className="text-sm text-foreground/90">
                     {currentQuestion.explanation}
@@ -282,4 +299,14 @@ export const Quiz = ({ selectedCategory, selectedDifficulty }: QuizProps) => {
       </Card>
     </div>
   );
+};
+
+const createSeededRandom = (seed: number) => {
+  let state = seed >>> 0;
+  return () => {
+    state += 0x6d2b79f5;
+    let t = Math.imul(state ^ (state >>> 15), 1 | state);
+    t ^= t + Math.imul(t ^ (t >>> 7), 61 | t);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
 };
